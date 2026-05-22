@@ -78,9 +78,9 @@ jobs:
           path: ~/.elm
           key: elm-book-${{ hashFiles('book/elm.json') }}
 
-      - name: Install book dependencies
+      - name: npm ci
+        if: steps.cache-node_modules.outputs.cache-hit != 'true'
         run: npm ci
-        working-directory: book
 
       - name: Build book
         run: npm run build
