@@ -1,17 +1,107 @@
-# `replaceme` [![Build Status](https://github.com/REPLACEME-AUTHOR-SLASH-REPO/workflows/CI/badge.svg)](https://github.com/REPLACEME-AUTHOR-SLASH-REPO/actions?query=branch%3Amain)
+# elm-lustre-ui
 
-## What this repo includes
+A collection of unstyled, primitive Web Components built with [Lustre](https://lustre.build).
 
-| What                                                              | Why?                                                                                                                                                                                                          |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| lydell/elm-tooling.json                                           | Install dependencies, cache them for faster GitHub Actions builds.                                                                                                                                            |
-| elm-test                                                          | Basic unit testing boilerplate and runs on GitHub Actions.                                                                                                                                                    |
-| [`jfmengels/elm-review`](https://github.com/jfmengels/elm-review) | Statically analyzes your code to find unused code, etc.                                                                                                                                                       |
-| dillonkearns/elm-publish-action                                   | Publishes your package whenever you bump your package version in elm.json on your default branch (`main` or `master`). It won't publish 1.0.0 for you, but it will release subsequent versions automatically. |
+## Example
 
-## Checklist
+```elm
+toggle : String -> String -> Html message
+toggle label symbol =
+    Lustre.Ui.Tooltip.view [ Lustre.Ui.Tooltip.delay 300 ]
+        (Lustre.Ui.Tooltip.popover
+            [ Lustre.Ui.Tooltip.side Lustre.Ui.Tooltip.Top
+            , Lustre.Ui.Tooltip.offset 10
+            ]
+            [ Html.text label ]
+        )
+        (Lustre.Ui.Tooltip.trigger []
+            [ Lustre.Ui.Toggle.view
+                [ Lustre.Ui.Toggle.default_pressed defaultPressed ]
+                [ Html.span [] [ Html.text symbol ] ]
+            ]
+        )
+```
 
-- [ ] Replace this with a nice readme (see this guide for designing Elm packages and writing nice docs/READMEs: <https://github.com/dillonkearns/idiomatic-elm-package-guide>)
-- [ ] Find all instances of replaceme in this repo and replace them
-- [ ] Add a file called `LICENSE` to the top-level folder. This is required to publish an Elm package. The most common and recommended license for open source Elm packages is BSD-3.
-- [ ] Publish version 1.0.0 (you have to start at V1 with Elm packages). Run `elm publish` from the root folder of this repo when you're all ready, and it will walk you through the process!
+## Philosophy
+
+Most other frontend ecosystems have one or more "headless" component libraries
+that focus on providing unstyled, accessible primitives that design systems and
+applications can be built on top of.
+
+Here are some of the high-level goals I have for lustre/ui and these bindings:
+
+- A focus on accessibility and usability, meaning correct ARIA attributes (where
+  appropriate) and considered keyboard interactions.
+
+- No `port`s or additional JavaScript interop. This library should feel like an
+  extension of the platform, using typical attributes and events for communication,
+  and no exotic hacks or backdoors for working around Elm's design.
+
+- "Low level" HTML-like API that feels like existing HTML elements. This should
+  allow more-opinionated libraries or application code to build their own abstractions
+  on top of these primitives.
+
+- Provide a faster-moving release cycle while the underlying lustre/ui package is
+  in active development. Hopefully this means getting some good feedback and
+  iteration on the API 💕.
+
+## Installation
+
+In order to use this package you'll also need to grab the JavaScript that registers
+the Web Components and make sure it runs before your Elm app starts. You can find
+both a regular and minified bundle in the `assets/` directory of this package on
+[GitHub](https://github.com/hayleigh-dot-dev/elm-lustre-ui).
+
+
+Once copied into your project, it's important to make sure the JavaScript is run
+before your Elm app starts. The module will automatically register the Web Components
+when it's important, so it is enough to just import the script in your main 
+JavaScript entry point.
+
+Here's what it looks like in our `elm-book` app:
+
+```js
+import "../../assets/ui.js";
+import "./storybook.css";
+import { Elm } from "./Main.elm";
+
+Elm.Main.init({ node: document.body });
+```
+
+If you'd prefer to build the JavaScript bundle yourself, you can do so by cloning
+the [Gleam repo](https://github.com/lustre-labs/ui/tree/hayleigh/headless-redux-redux)
+and running: `gleam run -m lustre/dev build lustre/ui`
+
+**Note**: Lustre's dev tools run on Gleam's _Erlang_ target so you'll need a recent
+distribution of Erlang installed to do this. It would also be possible to produce
+this bundle with JavaScript tools like esbuild or rollup, but I'm not able to provide
+support if you choose to go that route.
+
+## Contributing
+
+The best way to contribute is to help find and report errors, or to suggest
+improvements. I'm not sure I have the bandwidth to support code contributions right
+now, but if you're curious you can take a peek at the base repo:
+
+https://github.com/lustre-labs/ui/tree/hayleigh/headless-redux-redux
+
+## AI disclosure
+
+This package is an automated port of [lustre/ui](https://github.com/lustre-labs/ui/tree/hayleigh/headless-redux-redux)
+using both traditional code generation and generative AI. The implenentation of
+the Web Components themselves, all the documentation, and the design of the public
+API were hand-written **without** the use of AI. 
+
+The documentation and the public API for the port were automatically generated using
+the codegen program included in this repo. This works by taking the "package
+interface" produced by Gleam and scaffolding out corresponding Elm modules with
+the same API and documentation.
+
+The implementation of the public API in _this_ package was largely generated by
+AI by pointing it at the original Gleam source code and tasking it to translate
+it into Elm. That means the Elm elements, attributes, and event handlers for each
+Web Component were generated by AI, but **not** the functionality itself.
+
+For some folks, any use of generative AI will be a dealbreaker. This disclaimer is
+for those that want to make sure they are not pulling in a vibe-coded project of
+questionable quality or ownership.
