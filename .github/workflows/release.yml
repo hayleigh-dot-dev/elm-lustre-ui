@@ -79,7 +79,6 @@ jobs:
           key: elm-book-${{ hashFiles('book/elm.json') }}
 
       - name: npm ci
-        if: steps.cache-node_modules.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Build book
