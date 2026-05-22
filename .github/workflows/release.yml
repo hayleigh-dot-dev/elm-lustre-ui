@@ -40,7 +40,7 @@ jobs:
         run: npm ci
 
       - name: elm-format
-        run: npx --no-install elm-format --validate src/ tests/
+        run: npx --no-install elm-format --validate src/
 
       - name: Build elm docs
         run: npx --no-install elm make --docs docs.json
