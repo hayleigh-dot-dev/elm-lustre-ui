@@ -12,6 +12,7 @@ main =
     book "Lustre UI"
         |> ElmBook.withThemeOptions
             [ ElmBook.ThemeOptions.subtitle "Unstyled ui components for accessible elm apps."
+            , ElmBook.ThemeOptions.useHashBasedNavigation
             ]
         |> withChapters
             [ Chapters.Accordion.chapter_
