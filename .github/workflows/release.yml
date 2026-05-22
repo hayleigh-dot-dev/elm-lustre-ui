@@ -80,6 +80,7 @@ jobs:
 
       - name: npm ci
         run: npm ci
+        working-directory: book
 
       - name: Build book
         run: npm run build
